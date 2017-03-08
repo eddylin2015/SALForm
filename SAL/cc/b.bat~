@@ -1,0 +1,1 @@
+csc cc.cs program.cs ..\cx\cx.cs /out:cc.exe

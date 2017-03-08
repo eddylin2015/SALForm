@@ -1,0 +1,110 @@
+<table class='header' style="height: 80px">
+	<tr>
+		<td class='header'>澳門中學《薪金通知書》<br />MACAU BAPTIST COLLEGE PAYROLL ADVICE</td>
+	</tr>
+</table>
+<table style="height: 160px">
+	<tr>
+		<th class='lw' rowspan='2'>僱主資料<br />Employer Information</th>
+		<td style="width: 320px">名稱 : 澳門中學<br />School Name :Macau Baptist College</td>
+		<td>聯絡電話 Contact Tel:28478888</td>
+	</tr>
+	<tr>
+		<td colspan=2>辦公地址:;<br /> Working Addres:</td>
+	</tr>
+
+	<tr>
+		<th class='lw' rowspan='2'>僱員資料<br />Staff Information</th>
+		<td>姓名:<span id='c_name_keyid'></span><br />Name:<span id='e_name_keyid'></span></td>
+		<td>部門代號:<span id='WorkDept_keyid'></span><br />Department Code:</td>
+	</tr>
+	<tr>
+		<td colspan='2'>出糧編號Payroll Number:<span id='Sa_id_keyid'></span></td>
+	</tr>
+</table>
+<table class='note' style="height: 150px">
+<tr>
+<td class='note' style="vertical-align: text-top">注意:薪金乃員工個人及校方的私隱，雙方均須保密‧<br />Note : Salaries is  the staff and the school's privacy, both parties should be kept confidential.</td>
+</tr>
+</table>
+
+<table>
+	<tr>
+		<th  class='lw' rowspan='2'>僱員資料<br />Staff Information</th>
+		<td style="width: 320px">員工編號 Staff Number:<span id='Staf_ref_keyid'></span></td>
+		<td>職    位 Position:<span id='WorkPosi_keyid'></span></td>
+	</tr>
+	<tr>
+		<td>社會保障基金編號Social Security Fund Number:<span id='FSS_NO_keyid'></span></td>
+		<td>納稅人編號 Impost Number：<span id='TAX_NO_keyid'></span></td>
+	</tr>
+</table>
+<br />
+<table>
+	<tr><th  class='period' style="background-color:Gray;">與所獲薪酬相應的期間<br /> Salary Period</th><td><span id='Salary_Period_keyid'></span>(<span id='YM_keyid'></span>)</td></tr>
+</table>
+<br />
+<table id=IncTab_keyid>
+<tbody>
+	<tr>
+		<th rowspan='11' class='lw'>薪酬<br />Income</th>
+		<td style="width: 240px;text-align: center;">名稱Name</td><td style="width: 80px;text-align: center;">金額Amount</td>
+		<td style="width: 240px;text-align: center;">名稱Name</td><td style="text-align: center">金額Amount</td>
+	</tr>
+        </tbody>
+</table>
+        <div><span id=incomeothers_keyid></span></div>
+		<table class='total'><tr><td class=total>總報酬 Total Income :<span id='IncomeAmount_keyid'></span></td></tr></table>
+<table id=WhhTab_keyid>
+	<tr>
+		<th rowspan='3'  class='lw'>扣除<br />Deduction</th>
+		<td style="width: 240px;text-align:center">名稱Name</td><td style="width: 80px;text-align:center">金額Amount</td>
+		<td style="width: 240px;text-align:center">名稱Name</td><td style="text-align:center">金額Amount</td>
+         </tr>
+	<tr>
+		<td>(1)	公積金個人供款Pension Fund of this month</td><td class='r'><span id='FSS_Fee_keyid'></span></td><td>(3) 當月職業稅應繳稅額Income Tax of this month</td><td class='r'><span id='Tax_keyid'></span></td>
+        </tr>
+	<tr>
+		<td>(2)	社會保障基金個人供款Social Security Fund</td><td class='r'><span id='PensionFund_withhold_keyid'></span></td><td>(4) 告假Leave</td><td class='r'><span id='Leave_withhold_keyid'></span></td>
+        </tr>
+</table>
+								<table class='total'><tr><td class=total>總扣除 Total Deduction :<span id='WithholdAmount_keyid'></span></td></tr></table>
+
+
+<table id=AdjTab_keyid>
+	<tr>
+		<th rowspan='3'  class='lw'>調整<br />Adjustment</th>
+		
+		<td style="width: 240px;text-align:center">名稱Name</td><td style="width: 80px;text-align:center">金額Amount</td>
+		<td style="width: 240px;text-align:center">名稱Name</td><td style="text-align:center">金額Amount</td>
+		</tr>
+	<tr><td>(1)	年度職業稅Income Tax of the past whole year </td><td class='r'><span id='Adjust_tax_keyid'></span></td><td></td>
+         </tr>
+</table>										
+								<div><span id='adjothers_keyid'></span></div>
+								<table class='total'><tr><td class=total>	總調整Total Adjustment :<span id='AdjustAmount_keyid'></span></td></tr></table>
+<table>
+	<tr>
+		<th class="tw" style="background:gray;">總收入<br />Income</th>
+		<th class="tw1" style="background:gray;">總扣除<br />Total Deduct</th>
+		<th class="tw2" style="background:gray;">總調整<br />Total Adjustment</th>
+		<th class="tw3" style="background:gray;">淨收入<br />Net Income</th>
+		<th colspan="2" style="background:gray;">公積金供款累積總額<br /> Penson Fund</th>
+	</tr><tr>	
+		<td class='r'><span id="T_income0_keyid"></span></td>
+		<td class='r'><span id="T_withhold_keyid"></span></td>
+		<td class='r'><span id="T_Adj_total_keyid"></span></td>
+		<td class='r'><span id="Net_income_keyid"></span></td>
+		<td width='80px' class='r'><span id="PensionFund_Amount_keyid"></span></td>
+		<td class=AccuPensonFund>學校供款加上個人供款累積總額(不包括購買退休基金後的價值);This amount is shown for the contribution of Employer and Member Only , not reflect  the total Accumulated Amount of Luen Fung Hang Life Pension Fund.</td>		
+	</tr>
+</table>
+<table class="note">
+<tr><td class=note>
+附註Remarks:
+<br />										
+  1) 2013年職業稅稅制：每月收入多於澳門幣$16000 須扣職業稅，差額於年度結束時調整.<br />
+  &nbsp; &nbsp; Tax policy of 2013 :  if the month income amount is over Mop $16000 , the staff need to pay the income tax , and will adjust when the tax year finish .<br />
+  <span id=note2></span>
+</td></tr>										
+</table>

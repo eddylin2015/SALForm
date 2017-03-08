@@ -1,0 +1,150 @@
+CREATE TABLE sl_calcrule (
+  cr_id INTEGER PRIMARY KEY,
+  cr_i text,
+  cr_o text
+) ;
+
+CREATE TABLE sl_ctrldata (
+  curr_ym varchar(7)
+) ;
+CREATE TABLE sl_allotype (
+  allotypeid int(11) NOT NULL,
+  AlloType varchar(64) NOT NULL,
+  AlloTypeC varchar(64) NOT NULL,
+  AlloTypeE varchar(64) NOT NULL,
+  Tab int(11) NOT NULL,
+  fv int(11) NOT NULL,
+  base decimal(6,2) NOT NULL,
+  flag int(11) ,
+  CONSTRAINT AlloType_UNI   UNIQUE (AlloType)
+) ;
+CREATE TABLE sl_allo (
+  al_id INTEGER PRIMARY KEY,
+  staf_ref varchar(8) NOT NULL,
+  YM varchar(7),
+  allotypeid int(11) ,
+  fv int(11) ,
+  allotype varchar(64) ,
+  allowance varchar(64),
+  amount decimal(8,2),
+  base decimal(6,2) NOT NULL,
+  mul int(11) NOT NULL,
+  taxa int(11),
+  note text,
+  FOREIGN KEY(allotype) REFERENCES sl_allotype(allotype)
+);
+CREATE TABLE sl_rec (
+  sa_id int(11) PRIMARY KEY ,
+  acctItem_no varchar(64),  /*會計科目*/
+  acctItem varchar(64),/*會計代號*/
+  bankacct varchar(64),/*帳戶*/
+  transAcctno varchar(64),/*過數帳戶*/
+  qu_no int(11) ,/*QNO*/
+  salary_no varchar(4)  ,/*NO_*/
+  YM varchar(7)  NOT NULL ,/**/
+  Staf_ref varchar(8)  NOT NULL ,/*職員編號*/
+  c_name varchar(64)  ,/*中文姓名*/
+  bankacctname varchar(64)  ,/*戶名*/
+  TGRADE varchar(2) ,/*教師級別*/
+  Net_income decimal(10,2)   ,/*淨收入________*/
+  baseSalary decimal(10,2)  ,/*底薪________*/
+  SptPay decimal(10,2) ,  /*特別職務報酬_*/
+  FixExtraWorkPay decimal(10,2) ,/*超時薪金*/
+  sumbaseSalary  decimal(10,2) , /*總底薪________*/
+  Seniority decimal(10,2) ,/*年資*/
+  F_Allowance decimal(10,2) ,/*固定津貼總計*/
+  V_Allowance decimal(10,2)  ,/*非固定津貼總計*/
+  Teaching_subsidy_for_teacher_replacement  decimal(10,2)  ,/*正規代課*/
+  Not_teaching_subsidy_for_teacher_replacement  decimal(10,2)  ,/*自修管理*/
+  IncomeAmount  decimal(10,2)  ,     /*收入總數*/
+  PensionFund_withhold decimal(10,2)  ,/*學校5%基金*/
+   PensionFund_Amount decimal(16,2)  ,/*基金累積供款*/
+  FSS_Fee decimal(10,2),/*扣保障基金*/
+  Leave_withhold decimal(10,2),/*病事假扣薪*/
+  WithholdAmount decimal(10,2) ,/*扣減總數*/
+  Adjust_tax decimal(10,2) ,/*年度職業稅調整*/
+  AdjustAmount decimal(10,2) ,  /*調整總數*/
+  Taxable_Income decimal(10,2) ,/*每月總收益(不含B1)*/
+  Tax decimal(10,2) ,           /*職業稅扣款*/
+  salary_period varchar(128)  , /*描述*/
+  Note text  ,/**/
+  note1 text ,/**/
+  note2 text ,/**/
+  School_No char(16)  ,         /*159 學校編號*/  
+  WorkStatus int(11) ,          /*工作狀態*/
+  WorkPosi varchar(64)   ,      /*工作職位*/
+  WorkDept varchar(64)   ,      /*工作部門*/
+  
+  FSS_NO varchar(64)   ,        /*社工局編號*/
+  TAX_NO varchar(64)   ,        /*職業稅編號*/
+  schoolsect varchar(4)  ,      /*學部*/
+  PensionFund_preAmount decimal(10,2)   ,/**/
+  PensionFund_curr_YM varchar(7)   ,/**/
+  LeaveJob_Comp_PF decimal(10,2)  ,/**/
+  LeaveJob_Pers_PF decimal(10,2)  ,/**/
+  WorkType int(11)   ,      /*1:全職 0.兼職*/
+  PensionFund_Accept int(11)  ,
+  CONSTRAINT STAFYM_UNI   UNIQUE (Staf_ref,YM)
+);
+
+
+insert into sl_allotype
+(
+ allotypeid,
+  AlloType,
+  AlloTypeC,
+  AlloTypeE,
+  Tab,
+  fv,
+  base
+)values
+('1', 'sumbaseSalary', '基本薪金', 'Basic salary', '1', '0', '0.00'),
+('2', '---FixExtraWorkPay', '---加班費', 'OverTime salary', '2', '0', '0.00'),
+('3', '---SptPay', '---特別職務報酬', 'SpecialTast salary', '3', '0', '0.00'),
+('4', 'Seniority', '年資金', 'Seniority allowance', '4', '0', '0.00'),
+('5', 'Housing_allowance', '房屋津貼', 'Housing allowance', '5', '1', '0.00'),
+('6', 'Administration_allowance', '行政津貼', 'Administration allowance', '6', '1', '0.00'),
+('7', 'Class_Adviser_allowance', '班主任津貼', 'Class Adviser allowance', '7', '1', '0.00'),
+('8', 'Class_Leader_allowance', '級組長津貼', 'Class Leader allowance', '8', '1', '0.00'),
+('9', 'Extra_lessons_allowance', '超節津貼', 'Extra lessons allowance', '9', '1', '0.00'),
+('10', 'Other_subsidies', '其他津貼', 'Other subsidies', '10', '1', '0.00'),
+('11', 'Subject_Adviser_allowance', '科組長津貼', 'Subject Leader allowance', '23', '1', '0.00'),
+('12', 'Allowance_for_leading_and_coordinatiing_activities', '帶隊及活動協調津貼', 'Allowance for leading & coordinatiing activities', '24', '1', '0.00'),
+('13', 'Allowance_for_coordinatiing_activities_in_working_days', '周間協調活動津貼', 'Allowance for coordinatiing activities in working days', '25', '1', '0.00'),
+('14', 'Allowance_for_early_arrival', '早班津貼', 'Allowance for early arrival', '26', '1', '0.00'),
+('15', 'Allowance_for_assisting_the_works_of_PTAs', '協助家教會津貼', 'Allowance for assisting the works of PTAs', '27', '1', '0.00'),
+('16', 'Administrative_Assistant_allowance', '行政助理津貼', 'Administrative Assistant allowance', '28', '1', '0.00'),
+('17', 't24_hour_emergency_support_allowance', '24小時緊急支援津貼', '24-hour emergency support allowance', '29', '1', '0.00'),
+('18', 'Kindergarten_students_nap_care_allowance', '幼稚園照顧學生午睡津貼', 'Kindergarten students nap care allowance', '30', '1', '0.00'),
+('19', 'Responsible_for_cleaning_toilets_allowance', '專責清潔洗手間津貼', 'Responsible for cleaning toilets allowance', '31', '1', '0.00'),
+('20', 'After_work_overtime_allowance', '工餘時間超時津貼', 'After work overtime allowance', '32', '1', '0.00'),
+('21', 'Teacher_Replacement', '代課', 'Teacher Replacement', '36', '1', '0.00'),
+('22', 'Primary_Tutorial_Class_Allowance', '小學督課班津貼', 'Primary Tutorial Class Allowance', '11', '2', '250.00'),
+('23', 'Secondary_Tutorial_Class_allowance', '深化輔導班津貼', 'Secondary Tutorial Class allowance', '12', '2', '500.00'),
+('24', 'Tutorial_Class_allowance_of_student_team', '團隊學生補習津貼', 'Tutorial Class allowance of student team', '13', '2', '500.00'),
+('25', 'Years_of_service_gift', '年資服務禮金', 'Years of service gift', '14', '2', '0.00'),
+('26', 'Attendance_prize', '全勤獎獎金', 'Attendance prize', '15', '2', '0.00'),
+('27', 'Reference_books_allowance', '圖書津貼', 'Reference books allowance', '16', '2', '0.00'),
+('28', 'Christmas_allowance', '聖誕禮金', 'Christmas allowance', '17', '2', '0.00'),
+('29', 'New_Year_allowance', '新年禮金', 'New Year allowance', '18', '2', '0.00'),
+('30', 'Summer_Class_allowance', '夏令金', 'Summer Class allowance', '19', '2', '0.00'),
+('31', 'Not_teaching_subsidy_for_teacher_replacement', '自修管理津貼', 'Not-teaching subsidy for teacher replacement', '20', '2', '0.00'),
+('32', 'Teaching_subsidy_for_teacher_replacement', '正規代課費', 'Teaching subsidy for teacher replacement', '21', '2', '0.00'),
+('33', 'Kid_Tutorial_Class_Allowance', '幼稚園督課班津貼', 'Kid_Tutorial_Class_Allowance', '22', '2', '200.00'),
+('34', 'The_General_Workers_performance_bonus', '職工工作表現獎金', 'The General Workers performance bonus', '33', '2', '0.00'),
+('35', 'Leave_withhold', '請假', 'Leave', '35', '3', '0.00'),
+('36', 'Adjust_tax', '調整職業稅', 'Adjustment', '34', '4', '0.00'),
+('37', 'Extra_Income', '額外支票記錄', 'Extra_Income', '99', '9', '0.00');
+
+
+insert into sl_calcrule (cr_i)values('
+sumbaseSalary=baseSalary + SptPay + FixExtraWorkPay;
+F_Allowance=t24_hour_emergency_support_allowance+After_work_overtime_allowance+Administrative_Assistant_allowance+Administration_allowance+Allowance_for_early_arrival+Allowance_for_assisting_the_works_of_PTAs+Housing_allowance+Class_Adviser_allowance+Subject_Adviser_allowance+Class_Leader_allowance+Responsible_for_cleaning_toilets_allowance+Allowance_for_leading_and_coordinatiing_activities+Extra_lessons_allowance;
+V_Allowance=Kid_Tutorial_Class_Allowance+Kindergarten_students_nap_care_allowance+Secondary_Tutorial_Class_allowance+Tutorial_Class_allowance_of_student_team;
+IncomeAmount=sumbaseSalary+Seniority+F_Allowance+V_Allowance+Teaching_subsidy_for_teacher_replacement+Not_teaching_subsidy_for_teacher_replacement;
+PensionFund_withhold=sumbaseSalary * -0.05;
+PensionFund_Amount=PensionFund_preAmount+sumbaseSalary * 0.05;
+WithholdAmount=FSS_Fee+Leave_withhold+PensionFund_withhold;
+AdjustAmount=Adjust_tax;
+Taxable_Income=IncomeAmount+Leave_withhold;
+');

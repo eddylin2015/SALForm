@@ -1,0 +1,84 @@
+table 
+{
+width: 700px;
+}
+table,th,td
+{
+border-collapse:collapse;
+border:1px solid black;
+font-size : 90%
+}
+table.note,td.note
+{
+border-collapse:collapse;
+border:0px solid white;
+font-size : 90%
+}
+table.header,td.header
+{
+border-collapse:collapse;
+border:0px solid white;
+text-align:center;
+font-size : 120%;
+}
+table.total,td.total
+{
+border-collapse:collapse;
+border:0px solid white;
+font-size : 90%;
+text-align: right;
+}
+
+th.lw
+{
+  width: 60px;
+  background-color: gray;
+}
+th.period
+{
+  width: 130px;
+}
+th.tw
+{
+  width: 60px;
+}
+th.tw1
+{
+  width: 110px;
+}
+th.tw2
+{
+  width: 130px;
+}
+th.tw3
+{
+  width: 80px;
+}
+
+
+td.r
+{
+text-align:right;
+}
+td.AccuPensonFund
+{
+font-size:10px;
+}
+body
+{
+//width:80%;
+margin-top:50px;
+margin-bottom:10px;
+margin-right:10px;
+margin-left:30px;
+font-size:14px;
+}
+div.note
+{
+font-size:10px;
+}
+
+div.h
+{
+text-align:center;
+}

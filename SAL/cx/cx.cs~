@@ -1,0 +1,347 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.Common;
+/*除法優先高於乘法
+ *解釋運算式編譯成逆波蘭式
+ */
+namespace SAL.cx
+{
+    /*變數管理器Varibles Manager
+     * 
+     */
+    interface iVarMgr
+    {
+        Decimal getVar(string varname);
+        void setVar(string varname, Decimal o);
+        bool Contains(string varname);
+        Hashtable getHashtable();
+        void ADD(string varname, Decimal f);
+    }
+    class DataRowVarMgr : iVarMgr
+    {
+        private DataRow datarow_dict = null;
+        private Hashtable dict = new Hashtable();
+        public void ADD(string varname, Decimal f)
+        {
+            dict.Add(varname, f);
+        }
+        public Decimal getVar(string varname)
+        {
+            if(datarow_dict.Table.Columns.Contains(varname))
+            {
+                if (datarow_dict.IsNull(varname)) return 0.0M;
+            return (Decimal) datarow_dict[varname];    
+            }else{
+            return (Decimal)dict[varname];
+            }
+        }
+        public void setVar(string varname, Decimal o)
+        {
+            if(datarow_dict.Table.Columns.Contains(varname))
+            {
+                datarow_dict[varname]=o;
+            }else{
+                dict[varname] = o;
+            }
+        }
+        public DataRowVarMgr(DataRow _dr)
+        {
+            datarow_dict=_dr;
+        }
+        public bool Contains(string varname)
+        {
+            return datarow_dict.Table.Columns.Contains(varname)|| dict.Contains(varname);
+        }
+        public Hashtable getHashtable()
+        {
+            return (Hashtable)dict.Clone();
+        }
+    }
+    class SampleVarMgr : iVarMgr
+    {
+        private Hashtable dict = new Hashtable();
+        public void ADD(string varname, Decimal f)
+        {
+            dict.Add(varname, f);
+        }
+        public Decimal getVar(string varname)
+        {
+            return (Decimal)dict[varname];
+        }
+        public void setVar(string varname, Decimal o)
+        {
+            dict[varname] = o;
+        }
+        public SampleVarMgr()
+        {
+        }
+        public bool Contains(string varname)
+        {
+            return dict.Contains(varname);
+        }
+        public Hashtable getHashtable()
+        {
+            return (Hashtable)dict.Clone();
+        }
+    }
+    /*運算式中間代碼（逆波蘭式）運算執行器
+     */
+    class CalcMachine
+    {
+        public iVarMgr dict = null;//變數管理器
+        private List<string> rules = new List<string>(); //運算式子
+        private Stack tempStack = new Stack();
+        private Stack formuStack = new Stack();   //堆栈
+        private Hashtable opSet = new Hashtable();//運算符集
+        private Decimal calc(Stack f, Stack temp)   //堆栈運算逆波蘭式得出運算後結果
+        {
+            Decimal tempres = 0;
+            Decimal d1 = 0;
+            Decimal d2 = 0;
+            Decimal d3 = 0;
+            while (f.Count > 0)
+            {
+                Object o = f.Pop();
+                if (o is Decimal)
+                {
+                    tempStack.Push(o);
+                }
+                else
+                {
+                    switch (o.ToString()[0])
+                    {
+                        case '+':
+                            d1 = (Decimal)tempStack.Pop();
+                            d2 = (Decimal)tempStack.Pop();
+                            tempres = d2 + d1;
+                            tempStack.Push(tempres);
+                            break;
+                        case '-':
+                            d1 = (Decimal)tempStack.Pop();
+                            d2 = (Decimal)tempStack.Pop();
+                            tempres = d2 - d1;
+                            tempStack.Push(tempres);
+                            break;
+                        case '*':
+                            d1 = (Decimal)tempStack.Pop();
+                            d2 = (Decimal)tempStack.Pop();
+                            tempres = d2 * d1;
+                            tempStack.Push(tempres);
+                            break;
+                        case '/':
+                            d1 = (Decimal)tempStack.Pop();
+                            d2 = (Decimal)tempStack.Pop();
+                            tempres = d2 / d1;
+                            tempStack.Push(tempres);
+                            break;
+                        case ',':
+                            Object _o = f.Pop();
+                            if (_o is string)
+                            {
+                                switch (_o.ToString()[0])
+                                {
+                                    case ':':
+                                        d1 = (Decimal)tempStack.Pop();
+                                        d2 = (Decimal)tempStack.Pop();
+                                        d3 = (Decimal)tempStack.Pop();
+                                        if (d1 > 0)
+                                        {
+                                            tempres = d2;
+                                        }
+                                        else
+                                        {
+                                            tempres = d3;
+                                        }
+                                        tempStack.Push(tempres);
+                                        break;
+                                    default:
+                                        f.Push(_o);
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                f.Push(_o);
+                            }
+                            break;
+			case ':':
+			    
+			   
+		
+                               d1 = (Decimal)tempStack.Pop();
+                               Object _fo = tempStack.Pop();
+			       if((_fo is string) &&_fo.ToString().Equals("CalcTax"))
+			       { tempres=CalcTax(d1);
+					       }else{tempres=0.0M;}
+                             
+                              tempStack.Push(tempres);
+			    }
+                             
+		      break;	
+                    }
+                }
+            }
+            return (Decimal)tempStack.Pop();
+        }
+	public Decimal CalcTax(Decimal x){return x*0.05M;}
+        /*運算器構造，變數管理器iVarMgr　和　運算式文件名 filename
+         */
+         public CalcMachine(iVarMgr inst, string rule_o)
+         {
+            dict = inst;
+            //操作符集合
+            opSet.Add("+", 1);
+            opSet.Add("-", 1);
+            opSet.Add("*", 2);
+            opSet.Add("/", 2);
+            //計算公式集
+            string[] lines = rule_o.Split('\n');
+            for(int i=0;i<lines.Length;i++)
+            {
+                lines[i]=lines[i].TrimEnd();
+                if(lines[i].Equals("")) continue;
+                rules.Add(lines[i]);
+            }
+         }
+        public CalcMachine(iVarMgr inst, StreamReader srRules)
+        {
+            dict = inst;
+            //操作符集合
+            opSet.Add("+", 1);
+            opSet.Add("-", 1);
+            opSet.Add("*", 2);
+            opSet.Add("/", 2);
+            //計算公式集
+            string line = null;
+            while ((line = srRules.ReadLine()) != null)
+            {
+                rules.Add(line);
+            }
+            srRules.Close();
+        }
+        /*進行運算
+         */
+        public void Cal()
+        {
+            foreach (string s in rules)
+            {
+                string[] arstr = s.Split('=');
+                string varname = arstr[0];
+                if (!dict.Contains(varname))
+                {
+                    dict.ADD(varname, 0.0M);
+                }
+                Console.WriteLine(varname);
+                string[] formu = arstr[1].Split('|');
+                for (int i = 0; i < formu.Length; i++)
+                {
+                    string forum1rule = formu[formu.Length - 1 - i];
+                    if (opSet.Contains(forum1rule))
+                    {
+                        formuStack.Push(forum1rule);
+                    }
+                    else if (char.IsNumber(forum1rule, 0) || (forum1rule[0] == '-'))
+                    {
+                        formuStack.Push(Decimal.Parse(forum1rule));
+                    }
+                    else if (dict.Contains(forum1rule))
+                    {
+                        formuStack.Push(dict.getVar(forum1rule));
+                    }
+                    else
+                    {
+                        formuStack.Push(forum1rule);
+                    }
+                }
+                dict.setVar(varname, calc(formuStack, tempStack));
+                formuStack.Clear();
+                tempStack.Clear();
+            }
+
+        }
+
+    }
+    class CXMachine
+    {
+        public  static void run_cx(iVarMgr tvm ,string srRules,TextWriter _output){
+            //SampleVarMgr tvm = new SampleVarMgr();
+            CalcMachine cs = new CalcMachine(tvm, srRules);
+            /*顯示運算式中變數值
+             */
+            _output.WriteLine("Initalize Variables：");
+            foreach (DictionaryEntry entry in tvm.getHashtable())
+            {
+                _output.WriteLine(entry.Key + " = " + entry.Value);
+            }
+            _output.WriteLine("---------------");
+            cs.Cal();
+            /*顯示運算式中變數值
+             */
+            _output.WriteLine("Values After Calculation：");
+            foreach (DictionaryEntry entry in tvm.getHashtable())
+            {
+                _output.WriteLine(entry.Key + " = " + entry.Value);
+            }
+            _output.WriteLine("---------------");
+      }
+      public  static void run_test_cx(string srRules,TextWriter _output){
+            SampleVarMgr tvm = new SampleVarMgr();
+            CalcMachine cs = new CalcMachine(tvm, srRules);
+            /*顯示運算式中變數值
+             */
+            _output.WriteLine("Initalize Variables：");
+            foreach (DictionaryEntry entry in tvm.getHashtable())
+            {
+                _output.WriteLine(entry.Key + " = " + entry.Value);
+            }
+            _output.WriteLine("---------------");
+            cs.Cal();
+            /*顯示運算式中變數值
+             */
+            _output.WriteLine("Values After Calculation：");
+            foreach (DictionaryEntry entry in tvm.getHashtable())
+            {
+                _output.WriteLine(entry.Key + " = " + entry.Value);
+            }
+            _output.WriteLine("---------------");
+        }
+        static void run_console(string[] args)
+        {
+            SampleVarMgr tvm = new SampleVarMgr();
+            CalcMachine cs = null;
+            if (args.Length > 0)
+            {
+                cs = new CalcMachine(tvm, args[0]);
+            }
+            else
+            {
+                 System.IO.StreamReader srRules = new StreamReader("rule.out");
+                cs = new CalcMachine(tvm, srRules);
+            }
+            /*顯示運算式中變數值
+             */
+            Console.WriteLine("Initalize Variables：");
+            foreach (DictionaryEntry entry in tvm.getHashtable())
+            {
+                Console.WriteLine(entry.Key + " = " + entry.Value);
+            }
+            Console.WriteLine("---------------");
+            cs.Cal();
+            /*顯示運算式中變數值
+             */
+            Console.WriteLine("Values After Calculation：");
+            foreach (DictionaryEntry entry in tvm.getHashtable())
+            {
+                Console.WriteLine(entry.Key + " = " + entry.Value);
+            }
+            Console.WriteLine("---------------");
+            Console.ReadLine();
+        }
+    }
+}
